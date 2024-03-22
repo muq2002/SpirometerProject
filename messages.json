@@ -1,0 +1,32 @@
+[
+  {
+    "to": "",
+    "from": "",
+    "data": [
+      { "patientId": "", "testId": "", "value": "", "comment": "" },
+      { "patientId": "", "testId": "", "value": "", "comment": "" }
+    ]
+  },
+
+  {
+    "to": "",
+    "from": "",
+    "data": [
+      { "patientId": "", "drugId": "", "instructions": "", "comment": "" }
+    ]
+  },
+
+  {
+    "to": "",
+    "from": "",
+    "data": [
+      {
+        "patientId": "",
+        "patientName": "",
+        "patientAge": "",
+        "patientGender": "",
+        "phoneNumber": ""
+      }
+    ]
+  }
+]
