@@ -2,10 +2,10 @@
   {
     "to": "",
     "from": "",
-    "data": [
-      { "patientId": "", "testId": "", "value": "", "comment": "" },
-      { "patientId": "", "testId": "", "value": "", "comment": "" }
-    ]
+    "patientId": "",
+    "testId": "",
+    "value": "",
+    "comment": ""
   },
 
   {
