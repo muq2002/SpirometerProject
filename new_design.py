@@ -10,7 +10,7 @@ class PlotWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("Data Visualization")
+        self.setWindowTitle("Spirometer XLT 0.1")
         self.setGeometry(0, 0, 800, 600)  # Initial size (optional)
         self.showMaximized()  # Maximize the window
 

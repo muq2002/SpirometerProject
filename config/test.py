@@ -17,7 +17,6 @@ from matplotlib.animation import FuncAnimation
 import serial
 from threading import Thread
 import csv
-import numpy as np
 
 class SerialPlotter(QMainWindow):
     def __init__(self):
@@ -105,12 +104,10 @@ class SerialPlotter(QMainWindow):
 
     def update_data(self, value):
         self.x_data.append(len(self.x_data) + 1)
-        
-        self.buffer_data.append(value)
         self.y_data.append(value)
 
     def update_plot(self, frame):
-        
+        self.buffer_data.append(self.y_data)
         self.y_data = self.y_data[-50:]
 
         self.ax.clear()
@@ -135,8 +132,8 @@ class SerialPlotter(QMainWindow):
         if filename:
             with open(filename, "w", newline="") as csvfile:
                 csv_writer = csv.writer(csvfile)
-                csv_writer.writerow(['Value'])
-                csv_writer.writerow(np.transpose(np.array(self.buffer_data)))
+                for row in data_buffer:
+                    csv_writer.writerow(row)
             QMessageBox.information(
                 self, "Export Complete", f"Data has been exported to {filename}."
             )
