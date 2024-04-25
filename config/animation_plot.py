@@ -19,6 +19,7 @@ from threading import Thread
 import csv
 import numpy as np
 
+
 class SerialPlotter(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -51,11 +52,9 @@ class SerialPlotter(QMainWindow):
         self.serial = None
         self.is_running = False
 
-
         self.buffer_data = []
         self.x_data = []
         self.y_data = []
-
 
         self.exporting = False
         self.export_timer = QTimer()
@@ -105,12 +104,12 @@ class SerialPlotter(QMainWindow):
 
     def update_data(self, value):
         self.x_data.append(len(self.x_data) + 1)
-        
+
         self.buffer_data.append(value)
         self.y_data.append(value)
 
     def update_plot(self, frame):
-        
+
         self.y_data = self.y_data[-50:]
 
         self.ax.clear()
@@ -135,12 +134,11 @@ class SerialPlotter(QMainWindow):
         if filename:
             with open(filename, "w", newline="") as csvfile:
                 csv_writer = csv.writer(csvfile)
-                csv_writer.writerow(['Value'])
+                csv_writer.writerow(["Value"])
                 csv_writer.writerow(np.transpose(np.array(self.buffer_data)))
             QMessageBox.information(
                 self, "Export Complete", f"Data has been exported to {filename}."
             )
-
 
     def closeEvent(self, event):
         if self.serial is not None and self.serial.is_open:
