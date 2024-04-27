@@ -1,12 +1,16 @@
 import serial
+import json
 from threading import Thread
 import numpy as np
+from filters import moving_average_filter, integrate_discrete_signal
+import matplotlib.pyplot as plt
 
 class SerialConnection:
     def __init__(self):
         self.serial = None
         self.is_connected = False
-        self.data = {1: [], 2: [], 3: [], 4: []}  # Create separate data lists for each subplot
+        self.data = {"pressure": [], "flowrate": []}
+        self.filtered_data = {"pressure": [], "flowrate": []} 
 
     def connect(self, port, baudrate):
         if self.serial is None or not self.serial.is_open:
@@ -22,43 +26,48 @@ class SerialConnection:
                 data = self.serial.readline().decode().strip()
                 if data:
                     try:
-                        # Split data to update all four plots
-                        values = [float(val) for val in data.split(",")]
-                        update_data(values)
-                    except ValueError:
+                        json_data = json.loads(data)
+                        self.append_data(json_data)
+                        self.filter_data()
+                        update_data(json_data)
+                    except (ValueError, json.JSONDecodeError):
                         pass
         
         self.thread = Thread(target=read_serial)
         self.thread.start()
 
-    def append_data(self, values):
-        for i in range(4):
-            self.data[i + 1].append(values[i])
+    def append_data(self, json_data):
+        self.data["pressure"].append(json_data.get("pressure", 0))
+        self.data["flowrate"].append(json_data.get("flowrate", 0))
+
+    def filter_data(self):
+        window_size = 5
+        print("length of the data: ", len(self.filtered_data['pressure']))
+        self.filtered_data["pressure"] = moving_average_filter(self.data["pressure"], window_size)
+        self.filtered_data["flowrate"] = moving_average_filter(self.data["flowrate"], window_size)
 
     def update_plot(self, ax1, ax2, ax3, ax4):
-        # Limit data length for each plot
-        for i in range(4):
-            self.data[i + 1] = self.data[i + 1][-50:]
 
-        # Update the first subplot
+        self.data["pressure"] = self.data["pressure"][-50:]
+        self.data["flowrate"] = self.data["flowrate"][-50:]
+
+        self.filtered_data["pressure"] = self.filtered_data["pressure"][-50:]
+        self.filtered_data["flowrate"] = self.filtered_data["flowrate"][-50:]
+
         ax1.clear()
-        ax1.plot(self.data[1])
+        ax1.plot(self.filtered_data["pressure"])
 
-
-        # Update the second subplot
         ax2.clear()
-        ax2.plot(self.data[2])
+        ax2.plot(self.filtered_data["flowrate"])
 
+        volume = integrate_discrete_signal(self.filtered_data["flowrate"])
 
-        # Update the third subplot
         ax3.clear()
-        ax3.plot(self.data[3])
+        ax3.plot(volume)
 
-        # Update the fourth subplot
         ax4.clear()
-        ax4.plot(self.data[4])
-        # ax4.set_xlabel("Time")
-        # ax4.set_ylabel("Value 4")
+        ax4.plot(volume, self.filtered_data["pressure"])
+
 
     def close_connection(self):
         if self.serial is not None and self.serial.is_open:
