@@ -37,23 +37,20 @@ class SerialPlotter(QMainWindow):
         self.connect_button.clicked.connect(self.connect_serial)
         
 
-
         # Button to read CSV file
-        self.read_csv_button = QPushButton("Read CSV")
+        self.read_csv_button = QPushButton("Open ...")
         self.read_csv_button.clicked.connect(self.read_csv)
         controls_layout.addWidget(self.read_csv_button)
-
 
         # Add the controls to the controls layout
         controls_layout.addWidget(self.port_combo)
         controls_layout.addWidget(self.baudrate_combo)
         controls_layout.addWidget(self.connect_button)
 
-        self.export_start_button = QPushButton("Start Export")
+        self.export_start_button = QPushButton("Export")
         self.export_start_button.clicked.connect(self.start_export)
         self.export_start_button.setEnabled(True)
         controls_layout.addWidget(self.export_start_button)
-
 
 
         main_layout.addLayout(controls_layout)
@@ -71,17 +68,26 @@ class SerialPlotter(QMainWindow):
             read_csv_and_plot(filename, self.figure)
 
     def connect_serial(self):
-        port = self.port_combo.currentText()
-        baudrate = int(self.baudrate_combo.currentText())
-        self.serial_connection.connect(port, baudrate)
-
         if self.serial_connection.is_connected:
-            self.connect_button.setText("Disconnect")
-            self.export_start_button.setEnabled(True)
-            self.serial_connection.start_reading(self.update_data)
-        else:
+            # Disconnect the serial connection
+            self.serial_connection.close_connection()
             self.connect_button.setText("Connect")
-            self.export_start_button.setEnabled(False)
+            self.export_start_button.setEnabled(True)
+        else:
+            # Connect to the serial port
+            port = self.port_combo.currentText()
+            baudrate = int(self.baudrate_combo.currentText())
+            try:
+                self.serial_connection.connect(port, baudrate)
+                if self.serial_connection.is_connected:
+                    self.connect_button.setText("Disconnect")
+                    self.export_start_button.setEnabled(False)
+                    self.serial_connection.start_reading(self.update_data)
+                else:
+                    QMessageBox.warning(self, "Connection Error", "Failed to connect to the serial port.")
+            except Exception as e:
+                QMessageBox.warning(self, "Error", f"An error occurred while connecting: {e}")
+
 
     def update_data(self, values):
         self.serial_connection.append_data(values)
@@ -115,8 +121,7 @@ class SerialPlotter(QMainWindow):
     def start_export(self):
         dialog = PatientInfoDialog(self)
         if dialog.exec_():
-            patient_info = self.patient_info
-            self.exporter.export_data(patient_info)
+            self.exporter.export_data(self.folder_path,  self.serial_connection.get_data())
 
     def closeEvent(self, event):
         self.serial_connection.close_connection()

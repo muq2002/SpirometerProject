@@ -9,8 +9,10 @@ class SerialConnection:
     def __init__(self):
         self.serial = None
         self.is_connected = False
+
         self.data = {"pressure": [], "flowrate": []}
         self.filtered_data = {"pressure": [], "flowrate": []} 
+        self.buffer_data = {"pressure": [], "flowrate": []}
 
     def connect(self, port, baudrate):
         if self.serial is None or not self.serial.is_open:
@@ -40,6 +42,10 @@ class SerialConnection:
         self.data["pressure"].append(json_data.get("pressure", 0))
         self.data["flowrate"].append(json_data.get("flowrate", 0))
 
+        self.buffer_data["pressure"].append(json_data.get("pressure", 0))
+        self.buffer_data["flowrate"].append(json_data.get("flowrate", 0))
+
+
     def filter_data(self):
         window_size = 5
         print("length of the data: ", len(self.filtered_data['pressure']))
@@ -68,7 +74,9 @@ class SerialConnection:
         ax4.clear()
         ax4.plot(volume, self.filtered_data["pressure"])
 
-
+    def get_data(self):
+        return self.buffer_data
+    
     def close_connection(self):
         if self.serial is not None and self.serial.is_open:
             self.serial.close()

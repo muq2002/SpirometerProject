@@ -51,7 +51,6 @@ class PatientInfoDialog(QDialog):
         layout.addWidget(submit_button, 5, 0, 1, 2, Qt.AlignCenter)
 
     def submit_info(self):
-        # Collect patient information
         patient_info = {
             "id": self.id_input.text(),
             "name": self.name_input.text(),
@@ -60,7 +59,6 @@ class PatientInfoDialog(QDialog):
             "date": self.date_input.text(),
         }
 
-        # Validate the input data
         if not all(patient_info.values()):
             QMessageBox.warning(self, "Input Error", "All fields are required.")
             return
@@ -70,7 +68,6 @@ class PatientInfoDialog(QDialog):
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 
-        # Create a CSV file with patient information in the folder
         csv_filename = os.path.join(folder_path, f"patient_info.csv")
         try:
             with open(csv_filename, 'w', newline='') as csvfile:
@@ -78,13 +75,13 @@ class PatientInfoDialog(QDialog):
                 writer.writerow(["ID", "Name", "Age", "Gender", "Date of Scan"])
                 writer.writerow([patient_info["id"], patient_info["name"], patient_info["age"], patient_info["gender"], patient_info["date"]])
 
-            # Inform the user that the file was created successfully
+
             QMessageBox.information(self, "Success", f"Patient information exported to {csv_filename}.")
         except Exception as e:
             QMessageBox.warning(self, "Error", f"Failed to export patient information: {e}")
 
-        # Close the dialog
         self.accept()
 
         # Pass the patient info to the parent
         self.parent().patient_info = patient_info
+        self.parent().folder_path = folder_path
