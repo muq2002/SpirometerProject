@@ -64,7 +64,7 @@ class PatientInfoDialog(QDialog):
             return
 
         # Create folder using the patient's name
-        folder_path = os.path.join(os.getcwd(), patient_info["name"])
+        folder_path = os.path.join(os.getcwd(), "data/" + patient_info["name"])
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 

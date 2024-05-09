@@ -9,10 +9,10 @@ def read_csv_and_plot(filename, figure: Figure):
         df = pd.read_csv(filename)
 
         # Extract data from the CSV file
-        time = df["time"]
-        pressure = df["pressure"]
-        volume = df["volume"]
-        flowrate = df["flowrate"]
+        # time = df["time"]
+        pressure = df["Pressure"]
+        # volume = df["volume"]
+        flowrate = df["Flowrate"]
 
         ax1, ax2, ax3, ax4 = figure.get_axes()
 
@@ -23,20 +23,20 @@ def read_csv_and_plot(filename, figure: Figure):
         ax4.clear()
 
         ax1.plot(
-            time, pressure, label="Pressure", linestyle="-", color="blue", marker="o"
+            pressure, label="Pressure", linestyle="-", color="blue", marker="o"
         )
-        ax2.plot(time, volume, label="Volume", linestyle="-", color="blue", marker="o")
-        ax3.plot(
-            time, flowrate, label="Flow Rate", linestyle="-", color="blue", marker="o"
-        )
-        ax4.plot(
-            volume,
-            flowrate,
-            label="Volume vs Flow Rate",
-            linestyle="-",
-            color="blue",
-            marker="o",
-        )
+        ax2.plot(flowrate, label="Volume", linestyle="-", color="blue", marker="o")
+        # ax3.plot(
+        #     time, flowrate, label="Flow Rate", linestyle="-", color="blue", marker="o"
+        # )
+        # ax4.plot(
+        #     volume,
+        #     flowrate,
+        #     label="Volume vs Flow Rate",
+        #     linestyle="-",
+        #     color="blue",
+        #     marker="o",
+        # )
 
         ax1.set_xlabel("Time")
         ax1.set_ylabel("Pressure")

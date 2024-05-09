@@ -12,7 +12,7 @@ class SerialConnection:
 
         self.data = {"pressure": [], "flowrate": []}
         self.filtered_data = {"pressure": [], "flowrate": []} 
-        self.buffer_data = {"pressure": [], "flowrate": []}
+        self.buffer_data = {"pressure": [], "flowrate": [], "volume": []}
 
     def connect(self, port, baudrate):
         if self.serial is None or not self.serial.is_open:
@@ -44,11 +44,9 @@ class SerialConnection:
 
         self.buffer_data["pressure"].append(json_data.get("pressure", 0))
         self.buffer_data["flowrate"].append(json_data.get("flowrate", 0))
-
-
+        
     def filter_data(self):
         window_size = 5
-        print("length of the data: ", len(self.filtered_data['pressure']))
         self.filtered_data["pressure"] = moving_average_filter(self.data["pressure"], window_size)
         self.filtered_data["flowrate"] = moving_average_filter(self.data["flowrate"], window_size)
 
@@ -68,6 +66,11 @@ class SerialConnection:
 
         volume = integrate_discrete_signal(self.filtered_data["flowrate"])
 
+        # if len(volume) > 0:
+        #     self.buffer_data["volume"].append(0)
+        # else:
+        #     self.buffer_data["volume"].append(volume[-1:])
+ 
         ax3.clear()
         ax3.plot(volume)
 
