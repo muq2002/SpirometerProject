@@ -1,6 +1,6 @@
 # Spirometer Real-Time Serial Communication Interface
 
-![Spirometer Image](images/front_image.jpg)
+![Spirometer Image](https://github.com/muq2002/SpirometerProject/blob/master/images/front_view.jpg)
 
 ## Overview
 
