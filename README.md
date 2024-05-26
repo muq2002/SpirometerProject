@@ -18,9 +18,7 @@ The spirometer plays a vital role in the medical field for several reasons:
 
 3. **Pre- and Post-Surgery Evaluation**: Spirometry can be used to evaluate patients' lung function before and after surgery, ensuring their respiratory health is maintained.
 
-4. **Workplace Safety**: In industries where workers are exposed to airborne hazards, spirometry tests can monitor the effects of exposure and safeguard employee health.
-
-5. **Clinical Trials**: Spirometry data is often used in clinical trials for respiratory drugs and treatments to evaluate efficacy and safety.
+4. **Clinical Trials**: Spirometry data is often used in clinical trials for respiratory drugs and treatments to evaluate efficacy and safety.
 
 ## Features
 
